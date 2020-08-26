@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -47,10 +48,8 @@ public class JobData {
     }
 
     public static ArrayList<HashMap<String, String>> findAll() {
-
         // load data, if not already loaded
         loadData();
-
         return allJobs;
     }
 
@@ -66,21 +65,33 @@ public class JobData {
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
-
         // load data, if not already loaded
         loadData();
-
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
-
             String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+            //if (aValue.contains(value)) {
+            if (aValue.regionMatches(true,0,value,0,value.length())) {
                 jobs.add(row);
             }
         }
+        return jobs;
+    }
 
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+        loadData();
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> job : allJobs) {//loop ArrayList
+            for (Map.Entry<String, String> row : job.entrySet()) {//loop HashMap
+                String rowStr = row.getValue();
+                if (rowStr.regionMatches(true,0,value,0,value.length())) {//case-insensitive substring comparison
+                    jobs.add(job);
+                    break;
+                }
+            }
+        }
         return jobs;
     }
 
@@ -88,14 +99,12 @@ public class JobData {
      * Read in data from a CSV file and store it in a list
      */
     private static void loadData() {
-
         // Only load data once
         if (isDataLoaded) {
             return;
         }
 
         try {
-
             // Open the CSV file and set up pull out column header info and records
             Reader in = new FileReader(DATA_FILE);
             CSVParser parser = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
@@ -108,11 +117,9 @@ public class JobData {
             // Put the records into a more friendly format
             for (CSVRecord record : records) {
                 HashMap<String, String> newJob = new HashMap<>();
-
                 for (String headerLabel : headers) {
                     newJob.put(headerLabel, record.get(headerLabel));
                 }
-
                 allJobs.add(newJob);
             }
 
@@ -124,5 +131,4 @@ public class JobData {
             e.printStackTrace();
         }
     }
-
 }
