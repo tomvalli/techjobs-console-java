@@ -1,9 +1,7 @@
 package org.launchcode.techjobs.console;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by LaunchCode
@@ -38,12 +36,13 @@ public class TechJobs {
                 } else {
                     ArrayList<String> results = JobData.findAll(columnChoice);
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
+                    //Sort the results ArrayList<>
+                    java.util.Collections.sort(results);
                     // Print list of skills, employers, etc
                     for (String item : results) {
                         System.out.println(item);
                     }
                 }
-
             } else { // choice is "search"
                 // How does the user want to search (e.g. by skill or employer)
                 String searchField = getUserSelection("Search by:", columnChoices);
@@ -74,6 +73,8 @@ public class TechJobs {
             i++;
         }
 
+        choiceKeys = Stream.of(choiceKeys).sorted().toArray(String[]::new);
+
         do {
             System.out.println("\n" + menuHeader);
             // Print available choices
@@ -97,15 +98,19 @@ public class TechJobs {
 
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
+
         if(!someJobs.isEmpty()) {
             for (int i = 0; i < someJobs.size(); i++) {//loop ArrayList<>
                 System.out.println("*****");
                 HashMap<String, String> oneJob = someJobs.get(i);
+
                 for (Map.Entry<String, String> jb : oneJob.entrySet()) {//loop HashMap
-                    System.out.println(jb.getKey() + ": " + jb.getValue());
+                    System.out.println(jb.getKey() + ": " + jb.getValue());//prints "<key> : <value>" ex "position: Software Developer"
                 }
+
                 System.out.println("*****\n");
             }
+
             System.out.println(someJobs.size() + " results returned");
         } else {
             System.out.println("0 results returned.");

@@ -7,10 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -22,6 +19,7 @@ public class JobData {
 
     private static ArrayList<HashMap<String, String>> allJobs;
 
+
     /**
      * Fetch list of all values from loaded data,
      * without duplicates, for a given column.
@@ -30,15 +28,12 @@ public class JobData {
      * @return List of all of the values of the given field
      */
     public static ArrayList<String> findAll(String field) {
-
         // load data, if not already loaded
         loadData();
-
         ArrayList<String> values = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
             String aValue = row.get(field);
-
             if (!values.contains(aValue)) {
                 values.add(aValue);
             }
@@ -71,7 +66,6 @@ public class JobData {
 
         for (HashMap<String, String> row : allJobs) {
             String aValue = row.get(column);
-            //if (aValue.contains(value)) {
             if (aValue.regionMatches(true,0,value,0,value.length())) {
                 jobs.add(row);
             }
@@ -92,6 +86,7 @@ public class JobData {
                 }
             }
         }
+
         return jobs;
     }
 
